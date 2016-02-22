@@ -22,6 +22,16 @@
 *.a
 *.lib
 
+# VC++ files
+*.opendb
+*.sdf
+*.log
+*.tlog
+*.lastbuildstate
+*.idb
+*.pdb
+*.ilk
+
 # Executables
 *.exe
 *.out

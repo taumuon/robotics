@@ -7,7 +7,7 @@ public:
 	double length = 0.3;
 
 	double moment_inertia = 0.006;
-	double friction = 0.1;
+	double friction = 0.0;
 
 	double gravity = 9.8;
 };

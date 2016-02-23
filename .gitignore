@@ -34,6 +34,7 @@
 *.ipch
 *.iobj
 *.ipdb
+*.suo
 
 # Executables
 *.exe

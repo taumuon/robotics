@@ -52,27 +52,15 @@ double ControlSwingUp(const State& state)
 
 auto GetTimeStepFunctionCartPoleLinear(SystemParams system_params)
 {
-	// This is nasty, but Eigen has alignment issues if capturing by value
-
-	std::array<double, 16> a_array;
-	std::array<double, 4> b_array;
-	std::array<double, 8> c_array;
-	std::array<double, 2> d_array;
-
 	CartPoleLinear cart_pole_linear(system_params);
 
-	Eigen::Map<Eigen::Matrix<double, 4, 4>>(a_array.data(), 4, 4) = cart_pole_linear.AMatrix();
-	Eigen::Map<Eigen::Matrix<double, 4, 1>>(b_array.data(), 4, 1) = cart_pole_linear.BMatrix();
-	Eigen::Map<Eigen::Matrix<double, 2, 4>>(c_array.data(), 2, 4) = cart_pole_linear.CMatrix();
-	Eigen::Map<Eigen::Matrix<double, 2, 1>>(d_array.data(), 2, 1) = cart_pole_linear.DMatrix();
+	Eigen::Matrix<double, 4, 4> A(cart_pole_linear.AMatrix());
+	Eigen::Matrix<double, 4, 1> B(cart_pole_linear.BMatrix());
+	Eigen::Matrix<double, 2, 4> C(cart_pole_linear.CMatrix());
+	Eigen::Matrix<double, 2, 1> D(cart_pole_linear.DMatrix());
 
 	return [=](auto state, auto delta_time, auto u)
 	{
-		Eigen::Matrix<double, 4, 4> A(a_array.data());
-		Eigen::Matrix<double, 4, 1> B(b_array.data());
-		Eigen::Matrix<double, 2, 4> C(c_array.data());
-		Eigen::Matrix<double, 2, 1> D(d_array.data());
-
 		Eigen::Vector4d state_vector(state.data());
 
 		Eigen::Matrix<double, 4, 1> state_dot = (A * state_vector) - (B * u);

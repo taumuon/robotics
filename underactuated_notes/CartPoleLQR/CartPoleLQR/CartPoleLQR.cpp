@@ -54,23 +54,24 @@ auto GetTimeStepFunctionCartPoleLinear(SystemParams system_params)
 {
 	// This is nasty, but Eigen has alignment issues if capturing by value
 
-	CartPoleLinear cartPoleLinear(system_params);
-	Eigen::aligned_allocator<Eigen::Matrix4d> a_allocator;
-	Eigen::aligned_allocator<Eigen::Matrix<double, 4, 1>> b_allocator;
-	Eigen::aligned_allocator<Eigen::Matrix<double, 2, 4>> c_allocator;
-	Eigen::aligned_allocator<Eigen::Matrix<double, 2, 1>> d_allocator;
+	std::array<double, 16> a_array;
+	std::array<double, 4> b_array;
+	std::array<double, 8> c_array;
+	std::array<double, 2> d_array;
 
-	auto pA = std::allocate_shared<Eigen::Matrix4d>(a_allocator, cartPoleLinear.AMatrix());
-	auto pB = std::allocate_shared<Eigen::Matrix<double, 4, 1>>(b_allocator, cartPoleLinear.BMatrix());
-	auto pC = std::allocate_shared<Eigen::Matrix<double, 2, 4>>(c_allocator, cartPoleLinear.CMatrix());
-	auto pD = std::allocate_shared<Eigen::Matrix<double, 2, 1>>(d_allocator, cartPoleLinear.DMatrix());
+	CartPoleLinear cart_pole_linear(system_params);
+
+	Eigen::Map<Eigen::Matrix<double, 4, 4>>(a_array.data(), 4, 4) = cart_pole_linear.AMatrix();
+	Eigen::Map<Eigen::Matrix<double, 4, 1>>(b_array.data(), 4, 1) = cart_pole_linear.BMatrix();
+	Eigen::Map<Eigen::Matrix<double, 2, 4>>(c_array.data(), 2, 4) = cart_pole_linear.CMatrix();
+	Eigen::Map<Eigen::Matrix<double, 2, 1>>(d_array.data(), 2, 1) = cart_pole_linear.DMatrix();
 
 	return [=](auto state, auto delta_time, auto u)
 	{
-		auto A = *pA;
-		auto B = *pB;
-		auto C = *pC;
-		auto D = *pD;
+		Eigen::Matrix<double, 4, 4 >> A(a_array.data());
+		Eigen::Matrix<double, 4, 1 >> B(b_array.data());
+		Eigen::Matrix<double, 2, 4 >> C(c_array.data());
+		Eigen::Matrix<double, 2, 1 >> C(d_array.data());
 
 		Eigen::Vector4d state_vector(state.data());
 

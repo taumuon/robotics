@@ -10,8 +10,7 @@ CartPoleLinear::CartPoleLinear(const SystemParams& system_params)
 	auto length = system_params.length;
 	auto I = system_params.moment_inertia;
 
-	auto b = 0.1; // TODO: set to zero for consistency with non-linear ?
-				  // or change non-linear
+	auto b = system_params.friction;
 
 	auto lengthSquared = pow(length, 2.0);
 	auto p = (I*(m_c + m_p)) + (m_c*m_p*(lengthSquared));

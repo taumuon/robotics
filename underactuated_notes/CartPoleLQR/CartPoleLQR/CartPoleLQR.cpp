@@ -54,10 +54,10 @@ auto GetTimeStepFunctionCartPoleLinear(SystemParams system_params)
 {
 	CartPoleLinear cart_pole_linear(system_params);
 
-	Eigen::Matrix<double, 4, 4> A(cart_pole_linear.AMatrix());
-	Eigen::Matrix<double, 4, 1> B(cart_pole_linear.BMatrix());
-	Eigen::Matrix<double, 2, 4> C(cart_pole_linear.CMatrix());
-	Eigen::Matrix<double, 2, 1> D(cart_pole_linear.DMatrix());
+	auto A = cart_pole_linear.AMatrix();
+	auto B = cart_pole_linear.BMatrix();
+	auto C = cart_pole_linear.CMatrix();
+	auto D = cart_pole_linear.DMatrix();
 
 	return [=](auto state, auto delta_time, auto u)
 	{
@@ -138,8 +138,8 @@ int main()
 	auto initial_theta = 0.1;
 	auto initial_state = State{ 0.0, 0.0, initial_theta, 0.0 };
 
-	// auto time_stepper = GetTimeStepFunctionCartPoleLinear(system_params);
-	auto time_stepper = GetTimeStepFunctionCartPoleNonLinear(system_params);
+	auto time_stepper = GetTimeStepFunctionCartPoleLinear(system_params);
+	// auto time_stepper = GetTimeStepFunctionCartPoleNonLinear(system_params);
 	auto trajectory = SimulateTrajectory(initial_state, 100000, 0.0001,	time_stepper, ControlLQR);
 
 	auto count = 0;
